@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ -f "./makefile" ]; then
+    MAKEFILE="makefile"
+elif [ -f "./Makefile" ]; then
+    MAKEFILE="Makefile"
+else
+    echo "there is no makefile"
+fi
+
+TARGET=$(grep -i "target" ./$MAKEFILE | grep "=" | awk -F"=" '{print $2}' | xargs)
+
+cmd="./$TARGET"
+
+while getopts 'r:t no c:' flag; do
+  case "${flag}" in
+    r)  cmd="$cmd ${OPTARG}" ;;
+  esac
+done
+
+[[ $* == *-t* ]] && cmd="time $cmd"
+[[ $* == *-no* ]] && cmd="$cmd >/dev/null"
+
+if [ -n "$TARGET" ]; then
+    [[ $* == *-c* ]] && clear
+    make && eval "$cmd"
+else
+    echo "there is no target in the makefile"
+fi
