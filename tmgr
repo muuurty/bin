@@ -1,0 +1,7 @@
+#!/bin/bash
+
+INPUTS="$*"
+
+source ~/.local/bin/venv/bin/activate
+python3 ~/.local/bin/tmgr.py $INPUTS
+deactivate

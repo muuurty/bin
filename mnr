@@ -6,9 +6,15 @@ elif [ -f "./Makefile" ]; then
     MAKEFILE="Makefile"
 else
     echo "there is no makefile"
+    exit 1
 fi
 
 TARGET=$(grep -i "target" ./$MAKEFILE | grep "=" | awk -F"=" '{print $2}' | xargs)
+
+if [[ -z $TARGET ]]; then
+    echo "there is no target in the makefile"
+    exit 1
+fi
 
 cmd="./$TARGET"
 
@@ -21,9 +27,7 @@ done
 [[ $* == *-t* ]] && cmd="time $cmd"
 [[ $* == *-no* ]] && cmd="$cmd >/dev/null"
 
-if [ -n "$TARGET" ]; then
-    [[ $* == *-c* ]] && clear
-    make && eval "$cmd"
-else
-    echo "there is no target in the makefile"
-fi
+[[ $* == *-c* ]] && clear
+
+make && eval "$cmd"
+
